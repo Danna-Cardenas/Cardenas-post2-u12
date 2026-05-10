@@ -14,6 +14,7 @@ public class Pedido {
     private Long id;
     private double subtotal;
     private double costo;
+    private final com.empresa.pedidos.infraestructura.persistencia.PedidoJpaRepository repo = null;
 
     @Enumerated(EnumType.STRING)
     private TipoPedido tipo;
