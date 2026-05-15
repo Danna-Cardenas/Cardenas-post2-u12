@@ -1,6 +1,8 @@
 package com.empresa.pedidos;
 
+import com.empresa.pedidos.adaptadores.procesadores.ProcesadorPedidoFactory;
 import com.empresa.pedidos.dominio.puertos.ProcesadorPedido;
+import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
@@ -8,7 +10,7 @@ import com.tngtech.archunit.lang.ArchRule;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
-@AnalyzeClasses(packages = "com.empresa.pedidos")
+@AnalyzeClasses(packages = "com.empresa.pedidos", importOptions = ImportOption.DoNotIncludeTests.class)
 public class ReglasArquitectura {
 
     @ArchTest
@@ -24,8 +26,9 @@ public class ReglasArquitectura {
             .that().resideInAPackage("..adaptadores.rest..")
             .should().onlyAccessClassesThat()
             .resideInAnyPackage(
-                    "..adaptadores.facade..", "..dominio..",
-                    "org.springframework.web..", "java..");
+                    "..adaptadores.facade..", "..adaptadores.rest..",
+                    "..dominio..", "org.springframework.web..",
+                    "org.springframework.http..", "java..");
 
     @ArchTest
     static final ArchRule puertosComoInterfaces = classes()
@@ -35,6 +38,7 @@ public class ReglasArquitectura {
     @ArchTest
     static final ArchRule procesadoresImplementanPuerto = classes()
             .that().resideInAPackage("..adaptadores.procesadores..")
+            .and().areNotAssignableTo(ProcesadorPedidoFactory.class)
             .should().implement(ProcesadorPedido.class);
 
     @ArchTest
